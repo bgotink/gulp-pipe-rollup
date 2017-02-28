@@ -1,0 +1,26 @@
+{
+  "name": "gulp-pipe-rollup",
+  "version": "0.1.0",
+  "description": "Gulp plugin to pipe files into rollup",
+  "main": "dist/index.js",
+  "module": "index.js",
+  "repository": "https://github.com/bgotink/gulp-pipe-rollup",
+  "author": "Bram Gotink <bram@gotink.me>",
+  "license": "MIT",
+  "devDependencies": {
+    "babel-core": "^6.23.1",
+    "babel-plugin-transform-es2015-modules-commonjs": "^6.23.0",
+    "gulp": "^3.9.1",
+    "rollup": "^0.41.4"
+  },
+  "peerDependencies": {
+    "rollup": "^0.41.4"
+  },
+  "dependencies": {
+    "duplexify": "^3.5.0",
+    "vinyl": "^2.0.1"
+  },
+  "scripts": {
+    "build": "gulp"
+  }
+}
