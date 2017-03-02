@@ -21,6 +21,7 @@
     "vinyl": "^2.0.1"
   },
   "scripts": {
-    "build": "gulp"
+    "build": "gulp",
+    "prepublish": "rm -rf dist; npm run build"
   }
 }
