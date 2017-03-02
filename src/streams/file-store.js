@@ -11,7 +11,7 @@ export default class StoreFileStream extends Writable {
     this._files = files;
     this._listeners = listeners;
 
-    this.on('end', () => this._onEnd());
+    this.on('finish', () => this._onEnd());
   }
 
   /**

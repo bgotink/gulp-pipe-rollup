@@ -89,7 +89,7 @@ export default function gulpRollup(config) {
 
   const rollupPlugin = new LoadVinylFilesPlugin(files, listeners);
 
-  writableStream.on('end', () => rollupPlugin.markFileStreamEnded());
+  writableStream.on('finish', () => rollupPlugin.markFileStreamEnded());
 
   config = Object.assign({}, config);
   config.plugins = config.plugins ? [ rollupPlugin ].concat(config.plugins) : [ rollupPlugin ];
