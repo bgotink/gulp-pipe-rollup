@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "description": "Gulp plugin to pipe files into rollup",
   "main": "dist/index.js",
-  "module": "index.js",
+  "module": "src/index.js",
   "repository": "https://github.com/bgotink/gulp-pipe-rollup",
   "author": "Bram Gotink <bram@gotink.me>",
   "license": "MIT",

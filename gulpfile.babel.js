@@ -1,10 +1,10 @@
 import gulp from 'gulp';
-import rollup from './index';
+import rollup from './src/index';
 
 gulp.task('default', function () {
-  return gulp.src('index.js')
+  return gulp.src('src/**/*')
     .pipe(rollup({
-      entry: 'index.js',
+      entry: 'src/index.js',
 
       external: [
         'vinyl',

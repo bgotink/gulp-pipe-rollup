@@ -1,64 +1,26 @@
-import { Readable, Writable } from 'stream';
 import duplexify from 'duplexify';
+
+import StoreFileStream from './streams/file-store';
+import RollupResultStream from './streams/rollup-result';
 
 import { rollup } from 'rollup';
 import File from 'vinyl';
 
-class StoreFileStream extends Writable {
-  constructor(files, listeners) {
-    super({ objectMode: true, highWaterMark: 16 });
-
-    this._files = files;
-    this._listeners = listeners;
-
-    this.on('end', () => this._onEnd());
-  }
-
-  _write(file, encoding, cb) {
-    const { path } = file;
-
-    if (this._listeners.has(path)) {
-      this._listeners.get(path).forEach(listener => listener(file));
-      this._listeners.delete(path);
-    }
-
-    this._files.set(path, file);
-
-    cb();
-  }
-
-  _onEnd() {
-    for (let l of this._listeners.values()) {
-      l.forEach(listener => listener(null));
-    }
-
-    this._listeners.clear();
-  }
-}
-
-class RollupResultStream extends Readable {
-  constructor() {
-    super({ objectMode: true });
-  }
-
-  _read() {
-    // NOP
-  }
-
-  pushResultFile(file) {
-    this.push(file);
-    this.push(null);
-  }
-}
-
 class LoadVinylFilesPlugin {
+  /**
+   * @param {Map<string, File>} files
+   * @param {Map<string, Function[]>} listeners
+   */
   constructor(files, listeners) {
     this._files = files;
     this._listeners = listeners;
 
+    /** @type {boolean} */
     this._fileStreamEnded = false;
 
+    /** @type {boolean} */
     this._entryFileSet = false;
+    /** @type {File|null} */
     this._entryFile = undefined;
 
     this.load = this._load.bind(this);
@@ -72,7 +34,12 @@ class LoadVinylFilesPlugin {
     return this._entryFile;
   }
 
+  /**
+   * @param {string} path
+   * @return {Promise<string|null>}
+   */
   _load(path) {
+    // console.log('asking for %s', path);
     if (this._files.has(path)) {
       const file = this._files.get(path);
 
@@ -82,10 +49,13 @@ class LoadVinylFilesPlugin {
         this._entryFileSet = true;
       }
 
+      // console.log('returning file %s from cache', path);
+
       return Promise.resolve(file.contents.toString());
     }
 
     if (this._fileStreamEnded) {
+      // console.log('returning null for %s, file stream has ended', path);
       return Promise.resolve(null);
     }
 
@@ -100,6 +70,8 @@ class LoadVinylFilesPlugin {
         });
         this._entryFileSet = true;
       }
+
+      // console.log('awaiting file %s', path)
 
       this._listeners.get(path).push(file => resolve(file && file.contents.toString()));
     });
